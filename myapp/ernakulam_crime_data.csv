@@ -1,0 +1,18 @@
+place,latitude,longitude,crime_type,crime_date,risk_level
+MG Road,9.9816,76.2999,Theft,2024-01-05,7
+MG Road,9.9816,76.2999,Pickpocket,2024-02-12,6
+Kaloor,9.9984,76.3116,Assault,2024-01-20,8
+Kaloor,9.9984,76.3116,Harassment,2024-03-02,7
+Edappally,10.0261,76.3089,Theft,2024-02-15,6
+Edappally,10.0261,76.3089,Assault,2024-03-18,7
+Vyttila,9.9674,76.3185,Theft,2024-01-25,6
+Vyttila,9.9674,76.3185,Harassment,2024-02-28,5
+Fort Kochi,9.9669,76.2426,Theft,2024-03-10,4
+Aluva,10.1076,76.351,Assault,2024-01-30,6
+Aluva,10.1076,76.351,Theft,2024-02-22,5
+Tripunithura,9.9477,76.345,Harassment,2024-03-05,5
+Angamaly East,10.10637,76.41212,Theft,2024-04-01,5
+Kochi Marine Drive,9.965,76.257,Theft,2024-04-10,6
+Kochi Marine Drive,9.965,76.257,Assault,2024-04-15,7
+Mullassery Canal Road,9.9756,76.2850,Theft,2024-04-20,6
+Mullassery Canal Road,9.9756,76.2850,Harassment,2024-04-22,5

@@ -1,0 +1,406 @@
+{% include 'adminheader.html' %}
+<br><br><br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Authority - Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #2c3e50;
+      --secondary-blue: #3498db;
+      --light-blue: #ecf0f1;
+      --accent-blue: #2980b9;
+      --dark-gray: #34495e;
+      --light-gray: #f8f9fa;
+    }
+
+    body {
+      background: linear-gradient(135deg, var(--light-blue) 0%, #dfe6e9 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+    }
+
+    .admin-container {
+      max-width: 900px;
+      margin: 40px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(44, 62, 80, 0.1);
+      border: 1px solid rgba(52, 152, 219, 0.1);
+    }
+
+    .form-header {
+      border-bottom: 2px solid var(--secondary-blue);
+      padding-bottom: 20px;
+      margin-bottom: 35px;
+    }
+
+    .form-header h2 {
+      color: var(--primary-blue);
+      font-weight: 700;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .form-header h2:before {
+      content: "👨‍💼";
+      font-size: 24px;
+    }
+
+    .form-row {
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--dark-gray);
+      padding: 10px 0;
+      font-size: 15px;
+      letter-spacing: 0.3px;
+    }
+
+    .form-control {
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      background: var(--light-gray);
+    }
+
+    .form-control:focus {
+      border-color: var(--secondary-blue);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+      background: white;
+    }
+
+    .form-control::placeholder {
+      color: #95a5a6;
+      font-size: 14px;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary-blue);
+      font-size: 16px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--secondary-blue) 0%, var(--accent-blue) 100%);
+      border: none;
+      padding: 14px 40px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      color: white;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+      color: white;
+    }
+
+    .submit-btn:before {
+      content: "➕";
+      font-size: 18px;
+    }
+
+    .form-section {
+      background: #f8fafc;
+      padding: 25px;
+      border-radius: 12px;
+      border-left: 4px solid var(--secondary-blue);
+      margin-bottom: 30px;
+    }
+
+    .section-title {
+      color: var(--primary-blue);
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title:before {
+      content: "📋";
+      font-size: 16px;
+    }
+
+    .validation-hint {
+      font-size: 12px;
+      color: #7f8c8d;
+      margin-top: 6px;
+      display: block;
+      font-style: italic;
+    }
+
+    .required-mark {
+      color: #e74c3c;
+      margin-left: 4px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 25px;
+        margin: 20px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .form-label {
+        margin-bottom: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <div class="form-header">
+      <h2>Add New Authority</h2>
+      <p class="text-muted mb-0">Fill in the authority details below. All fields are required.</p>
+    </div>
+
+    <form action="/myapp/addauthority_post/" method="post" class="needs-validation" novalidate>
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <div class="section-title">Personal Information</div>
+
+        <div class="form-row">
+          <label for="name" class="col-sm-4 form-label">Full Name <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="name" name="name"
+                     pattern="[A-Za-z\s]{3,50}"
+                     title="Name must be 3-50 letters only"
+                     placeholder="Enter full name"
+                     required>
+              <span class="input-icon">👤</span>
+            </div>
+            <small class="validation-hint">3-50 letters, spaces allowed</small>
+            <div class="invalid-feedback">
+              Please enter a valid name (3-50 letters, spaces allowed).
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="email" class="col-sm-4 form-label">Email Address <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="email" class="form-control" id="email" name="email"
+                     pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                     title="Enter a valid email address"
+                     placeholder="authority@example.com"
+                     required>
+              <span class="input-icon">✉️</span>
+            </div>
+            <small class="validation-hint">Valid email format required</small>
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="phone" class="col-sm-4 form-label">Phone Number <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="tel" class="form-control" id="phone" name="phone"
+                     pattern="[0-9]{10}"
+                     title="10-digit phone number required"
+                     placeholder="10-digit mobile number"
+                     required>
+              <span class="input-icon">📱</span>
+            </div>
+            <small class="validation-hint">Exactly 10 digits</small>
+            <div class="invalid-feedback">
+              Please enter a 10-digit phone number.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Information Section -->
+      <div class="form-section">
+        <div class="section-title">Address Information</div>
+
+        <div class="form-row">
+          <label for="place" class="col-sm-4 form-label">Place/Locality <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="place" name="place"
+                     pattern="[A-Za-z\s]{3,30}"
+                     title="Place name (3-30 letters)"
+                     placeholder="Enter locality/area"
+                     required>
+              <span class="input-icon">🏘️</span>
+            </div>
+            <small class="validation-hint">3-30 letters, spaces allowed</small>
+            <div class="invalid-feedback">
+              Please enter a valid place name.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="city" class="col-sm-4 form-label">City <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="city" name="city"
+                     pattern="[A-Za-z\s]{3,30}"
+                     title="City name (3-30 letters)"
+                     placeholder="Enter city name"
+                     required>
+              <span class="input-icon">🏙️</span>
+            </div>
+            <small class="validation-hint">3-30 letters</small>
+            <div class="invalid-feedback">
+              Please enter a valid city name.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="district" class="col-sm-4 form-label">District <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="district" name="district"
+                     pattern="[A-Za-z\s]{3,30}"
+                     title="District name (3-30 letters)"
+                     placeholder="Enter district name"
+                     required>
+              <span class="input-icon">🗺️</span>
+            </div>
+            <small class="validation-hint">3-30 letters</small>
+            <div class="invalid-feedback">
+              Please enter a valid district name.
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="pin" class="col-sm-4 form-label">PIN Code <span class="required-mark">*</span></label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="pin" name="pin"
+                     pattern="[0-9]{6}"
+                     title="6-digit PIN code"
+                     placeholder="6-digit PIN code"
+                     required>
+              <span class="input-icon">📍</span>
+            </div>
+            <small class="validation-hint">Exactly 6 digits</small>
+            <div class="invalid-feedback">
+              Please enter a 6-digit PIN code.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="row mt-4">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-8">
+          <button type="submit" class="submit-btn">Add Authority</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Enhanced form validation with real-time feedback
+    (function() {
+      'use strict';
+
+      const forms = document.querySelectorAll('.needs-validation');
+      const inputs = document.querySelectorAll('.form-control');
+
+      // Real-time validation on input
+      inputs.forEach(input => {
+        input.addEventListener('input', function() {
+          if (this.checkValidity()) {
+            this.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+          } else {
+            this.classList.remove('is-valid');
+            this.classList.add('is-invalid');
+          }
+        });
+
+        input.addEventListener('blur', function() {
+          if (this.value && !this.checkValidity()) {
+            this.classList.add('is-invalid');
+          }
+        });
+      });
+
+      // Form submission validation
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', function(event) {
+          if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Focus on first invalid input
+            const firstInvalid = form.querySelector('.form-control:invalid');
+            if (firstInvalid) {
+              firstInvalid.focus();
+            }
+          }
+
+          form.classList.add('was-validated');
+        }, false);
+      });
+
+      // Auto-format phone number
+      const phoneInput = document.getElementById('phone');
+      if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length > 10) value = value.substring(0, 10);
+          e.target.value = value;
+        });
+      }
+
+      // Auto-format PIN code
+      const pinInput = document.getElementById('pin');
+      if (pinInput) {
+        pinInput.addEventListener('input', function(e) {
+          let value = e.target.value.replace(/\D/g, '');
+          if (value.length > 6) value = value.substring(0, 6);
+          e.target.value = value;
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+{% include 'adminfooter.html' %}

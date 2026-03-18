@@ -1,0 +1,429 @@
+{% include 'adminheader.html' %}
+<br><br><br><br>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bus Stops Management</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #1abc9c;
+      --warning-color: #e74c3c;
+    }
+
+    body {
+      background: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+
+    .container-custom {
+      max-width: 1000px;
+      margin: 30px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    .page-title {
+      color: var(--primary-color);
+      font-weight: 700;
+      margin-bottom: 30px;
+      border-bottom: 3px solid var(--accent-color);
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .page-title i {
+      color: var(--accent-color);
+    }
+
+    .btn-add {
+      background: var(--accent-color);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-add:hover {
+      background: #16a085;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(26, 188, 156, 0.3);
+    }
+
+    /* TABLE STYLING */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    #registrationTable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0;
+    }
+
+    /* HEADER - VISIBLE WITH DARK BACKGROUND */
+    #registrationTable thead {
+      background: var(--primary-color) !important;
+      display: table-header-group !important;
+      visibility: visible !important;
+    }
+
+    #registrationTable thead th {
+      color: white !important;
+      font-weight: 600 !important;
+      font-size: 15px !important;
+      padding: 18px 15px !important;
+      border: none !important;
+      text-align: center !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+      background: transparent !important;
+    }
+
+    #registrationTable thead th i {
+      margin-right: 8px;
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* Table body */
+    #registrationTable tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid #eee;
+    }
+
+    #registrationTable tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    #registrationTable tbody tr:hover {
+      background-color: #e8f4fc;
+      transform: translateX(2px);
+    }
+
+    #registrationTable tbody td {
+      padding: 16px 15px;
+      color: #333;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      vertical-align: middle;
+      border-top: 1px solid #eee;
+    }
+
+    /* Column width adjustments */
+    #registrationTable th:nth-child(1),
+    #registrationTable td:nth-child(1) {
+      width: 80px;
+      text-align: center;
+    }
+
+    #registrationTable th:nth-child(2),
+    #registrationTable td:nth-child(2) {
+      width: 250px;
+      text-align: left;
+    }
+
+    #registrationTable th:nth-child(3),
+    #registrationTable td:nth-child(3) {
+      width: 250px;
+      text-align: left;
+    }
+
+    #registrationTable th:nth-child(4),
+    #registrationTable td:nth-child(4) {
+      width: 100px;
+      text-align: center;
+    }
+
+    #registrationTable th:nth-child(5),
+    #registrationTable td:nth-child(5) {
+      width: 100px;
+      text-align: center;
+    }
+
+    /* Stop badges */
+    .stop-id {
+      background: var(--secondary-color);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-block;
+      min-width: 35px;
+    }
+
+    .route-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .route-icon {
+      color: var(--secondary-color);
+      font-size: 16px;
+    }
+
+    .stop-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stop-icon {
+      color: var(--accent-color);
+      font-size: 16px;
+    }
+
+    /* Action buttons */
+    .btn-action {
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      min-width: 80px;
+    }
+
+    .btn-edit {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+    }
+
+    .btn-delete {
+      background: var(--warning-color);
+      color: white;
+      border: none;
+    }
+
+    .btn-edit:hover {
+      background: #2980b9;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(52, 152, 219, 0.3);
+    }
+
+    .btn-delete:hover {
+      background: #c0392b;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+    }
+
+    /* DataTables customization */
+    .dataTables_wrapper {
+      margin-top: 20px;
+    }
+
+    .dataTables_length,
+    .dataTables_filter {
+      margin-bottom: 15px;
+    }
+
+    .dataTables_length label,
+    .dataTables_filter label {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .dataTables_filter input {
+      border: 2px solid #dee2e6;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-left: 10px;
+    }
+
+    .dataTables_filter input:focus {
+      border-color: var(--accent-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+    }
+
+    .paginate_button {
+      border-radius: 6px !important;
+      margin: 0 4px !important;
+      border: 1px solid #dee2e6 !important;
+      padding: 8px 12px !important;
+    }
+
+    .paginate_button.current {
+      background: var(--primary-color) !important;
+      color: white !important;
+      border-color: var(--primary-color) !important;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 40px 20px;
+      text-align: center;
+      color: #6c757d;
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      opacity: 0.3;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container-custom {
+        padding: 20px;
+        margin: 15px;
+      }
+
+      .table-container {
+        font-size: 13px;
+      }
+
+      #registrationTable thead th,
+      #registrationTable tbody td {
+        padding: 12px 8px;
+        font-size: 13px;
+      }
+
+      .btn-action {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-width: 70px;
+      }
+
+      .route-info, .stop-info {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-custom">
+    <h1 class="page-title">
+      <i class="fas fa-map-marker-alt"></i> Bus Stops Management
+    </h1>
+
+    <a href="/myapp/addstop/" class="btn-add">
+      <i class="fas fa-plus-circle"></i> Add New Stop
+    </a>
+
+    <div class="table-container">
+      <table id="registrationTable" class="table">
+        <thead>
+          <tr>
+            <th><i class="fas fa-hashtag"></i> #</th>
+            <th><i class="fas fa-route"></i> Route</th>
+            <th><i class="fas fa-map-pin"></i> Stop</th>
+            <th><i class="fas fa-edit"></i> Edit</th>
+            <th><i class="fas fa-trash"></i> Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in data %}
+          <tr>
+            <td><span class="stop-id">{{ forloop.counter }}</span></td>
+            <td>
+              <div class="route-info">
+                <i class="fas fa-bus route-icon"></i>
+                {{ i.ROUTE.from_destination }} → {{ i.ROUTE.to_destination }}
+              </div>
+            </td>
+            <td>
+              <div class="stop-info">
+                <i class="fas fa-map-marker-alt stop-icon"></i>
+                {{ i.stopname }}
+              </div>
+            </td>
+            <td>
+              <a href="/myapp/editstop_get/{{ i.id }}" class="btn-action btn-edit">
+                <i class="fas fa-edit"></i> Edit
+              </a>
+            </td>
+            <td>
+              <a href="/myapp/deletestop/{{ i.id }}" class="btn-action btn-delete"
+                 onclick="return confirm('Delete stop: {{ i.stopname }}?')">
+                <i class="fas fa-trash-alt"></i> Delete
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="empty-state">
+              <i class="fas fa-map-marker-alt"></i>
+              <h5>No Stops Found</h5>
+              <p>Add your first stop using the button above</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Initialize DataTable with fixed header styling
+      const table = $('#registrationTable').DataTable({
+        "pageLength": 10,
+        "language": {
+          "search": "Search stops:",
+          "lengthMenu": "Show _MENU_ entries",
+          "info": "Showing _START_ to _END_ of _TOTAL_ stops"
+        },
+        "drawCallback": function(settings) {
+          // Force header visibility
+          $('#registrationTable thead').css({
+            'display': 'table-header-group',
+            'visibility': 'visible',
+            'background': '#2c3e50'
+          });
+          $('#registrationTable thead th').css({
+            'color': 'white',
+            'background': 'transparent'
+          });
+        }
+      });
+
+      // Apply header styling on load
+      setTimeout(() => {
+        $('#registrationTable thead').css('background', '#2c3e50');
+        $('#registrationTable thead th').css('color', 'white');
+      }, 100);
+    });
+  </script>
+</body>
+</html>
+
+{% include 'adminfooter.html' %}

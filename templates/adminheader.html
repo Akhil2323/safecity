@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Safe City Admin Dashboard</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="/static/assets/img/favicon.png" rel="icon">
+  <link href="/static/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/static/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="/static/assets/css/main.css" rel="stylesheet">
+
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Premium Navbar Styles */
+    :root {
+      --primary-dark: #0a1929;
+      --primary-blue: #1a56db;
+      --accent-blue: #3b82f6;
+      --light-blue: #60a5fa;
+      --nav-gradient: linear-gradient(135deg, #0a1929 0%, #1e3a8a 100%);
+      --nav-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      --nav-glass: rgba(10, 25, 41, 0.98);
+      --hover-glow: 0 0 20px rgba(59, 130, 246, 0.6);
+      --dropdown-bg: rgba(10, 25, 41, 0.98);
+      --dropdown-border: rgba(255, 255, 255, 0.15);
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: var(--nav-gradient) !important;
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      box-shadow: var(--nav-shadow);
+      border-bottom: 1px solid var(--dropdown-border);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0;
+      height: 72px;
+    }
+
+    .header.scrolled {
+      background: var(--nav-glass) !important;
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+    }
+
+    .container-fluid.container-xl {
+      height: 100%;
+      padding: 0 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Logo Styling */
+    .logo {
+      margin-right: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo h1.sitename {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 28px;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 30%, #1d4ed8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1.2px;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(59, 130, 246, 0.3);
+      position: relative;
+    }
+
+    .logo h1.sitename::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 45px;
+      height: 4px;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+
+    /* Navigation Container */
+    .d-flex.align-items-center.justify-content-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    /* Navigation Menu */
+    .navmenu {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      height: 100%;
+    }
+
+    .navmenu ul {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    .navmenu > ul > li {
+      position: relative;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .navmenu > ul > li > a {
+      color: rgba(255, 255, 255, 0.95);
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 0 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      position: relative;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .navmenu > ul > li > a:hover {
+      color: white;
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+      box-shadow: var(--hover-glow);
+    }
+
+    .navmenu > ul > li > a.active {
+      color: white;
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .navmenu > ul > li > a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 20px;
+      right: 20px;
+      height: 3px;
+      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      border-radius: 3px;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+    }
+
+    /* Dropdown Styles */
+    .navmenu ul li.dropdown {
+      position: relative;
+    }
+
+    .navmenu ul li.dropdown > a::after {
+      content: '';
+      display: inline-block;
+      margin-left: 6px;
+      border-top: 4px solid;
+      border-right: 4px solid transparent;
+      border-left: 4px solid transparent;
+      vertical-align: middle;
+      color: rgba(255, 255, 255, 0.7);
+      transition: transform 0.3s ease;
+    }
+
+    .navmenu ul li.dropdown:hover > a::after {
+      transform: rotate(180deg);
+      color: white;
+    }
+
+    .navmenu ul li .dropdown ul {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      min-width: 220px;
+      background: var(--dropdown-bg);
+      backdrop-filter: blur(20px) saturate(200%);
+      -webkit-backdrop-filter: blur(20px) saturate(200%);
+      border: 1px solid var(--dropdown-border);
+      border-radius: 12px;
+      padding: 10px 0;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      margin-top: 5px;
+    }
+
+    .navmenu ul li.dropdown:hover > ul {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .navmenu ul li .dropdown ul li {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .navmenu ul li .dropdown ul li a {
+      color: rgba(255, 255, 255, 0.9);
+      padding: 12px 20px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .navmenu ul li .dropdown ul li a:hover {
+      color: white;
+      background: rgba(59, 130, 246, 0.2);
+      padding-left: 25px;
+    }
+
+    .navmenu ul li .dropdown ul li a i {
+      font-size: 16px;
+      color: #60a5fa;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Logout Button */
+    .cta-btn {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      height: 44px;
+      margin-left: 20px;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      color: white;
+    }
+
+    .cta-btn i {
+      font-size: 16px;
+    }
+
+    /* Mobile Nav Toggle */
+    .mobile-nav-toggle {
+      display: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.12);
+      padding: 8px;
+      border-radius: 8px;
+      margin-left: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .mobile-nav-toggle:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Mobile Navigation */
+    @media (max-width: 1199px) {
+      .mobile-nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .navmenu {
+        position: fixed;
+        top: 72px;
+        right: -100%;
+        width: 300px;
+        height: calc(100vh - 72px);
+        background: var(--nav-gradient);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border-left: 1px solid var(--dropdown-border);
+        padding: 20px;
+        transition: right 0.4s ease;
+        overflow-y: auto;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+
+      .navmenu.active {
+        right: 0;
+        box-shadow: -20px 0 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .navmenu ul {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+
+      .navmenu > ul > li {
+        width: 100%;
+        height: auto;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .navmenu > ul > li:last-child {
+        border-bottom: none;
+      }
+
+      .navmenu > ul > li > a {
+        width: 100%;
+        height: auto;
+        padding: 12px 15px;
+        font-size: 16px;
+        justify-content: space-between;
+      }
+
+      .navmenu > ul > li > a::after {
+        display: none;
+      }
+
+      .navmenu ul li .dropdown ul {
+        position: static;
+        width: 100%;
+        background: rgba(10, 25, 41, 0.8);
+        border: none;
+        box-shadow: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+        margin: 10px 0 0 20px;
+        padding: 0;
+      }
+
+      .navmenu ul li.dropdown.active > ul {
+        display: block;
+      }
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 1400px) {
+      .navmenu > ul > li > a {
+        font-size: 13px;
+        padding: 0 16px;
+      }
+
+      .logo h1.sitename {
+        font-size: 24px;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .navmenu > ul > li > a {
+        font-size: 12px;
+        padding: 0 14px;
+      }
+
+      .logo h1.sitename {
+        font-size: 22px;
+      }
+
+      .cta-btn {
+        padding: 8px 20px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container-fluid.container-xl {
+        padding: 0 15px;
+      }
+
+      .cta-btn span {
+        display: none;
+      }
+
+      .cta-btn {
+        padding: 10px;
+        width: 44px;
+        justify-content: center;
+      }
+
+      .cta-btn i {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="/myapp/adminhome/" class="logo d-flex align-items-center">
+        <h1 class="sitename">Safe City</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="/myapp/adminhome/" class="active">Home</a></li>
+
+          <li class="dropdown">
+            <a href="#">Authority</a>
+            <ul>
+              <li><a href="/myapp/addauthority_get/#add"><i class="bi bi-person-plus"></i> Add Authority</a></li>
+              <li><a href="/myapp/viewauthority/#a"><i class="bi bi-people"></i> View Authority</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#">Bus</a>
+            <ul>
+              <li><a href="/myapp/addbus_get/#aa"><i class="bi bi-bus-front"></i> Add Bus</a></li>
+              <li><a href="/myapp/viewbus/#ac"><i class="bi bi-bus-front-fill"></i> View Bus</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#">Route</a>
+            <ul>
+              <li><a href="/myapp/addroute_get/#ae"><i class="bi bi-signpost"></i> Add Route</a></li>
+              <li><a href="/myapp/viewroute/#af"><i class="bi bi-signpost-split"></i> View Route</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#">Stop</a>
+            <ul>
+              <li><a href="/myapp/addstop_get/#ag"><i class="bi bi-geo-alt"></i> Add Stop</a></li>
+              <li><a href="/myapp/viewstop/#pa"><i class="bi bi-geo-alt-fill"></i> View Stop</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#">Assign Route</a>
+            <ul>
+              <li><a href="/myapp/assignroute_get/#aw"><i class="bi bi-diagram-3"></i> Add Assign Route</a></li>
+              <li><a href="/myapp/viewassignroute/#dd"><i class="bi bi-diagram-3-fill"></i> View Assign Route</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <a href="#">Places</a>
+            <ul>
+              <li><a href="/myapp/addplace_get/#sa"><i class="bi bi-pin-map"></i> Add Place</a></li>
+              <li><a href="/myapp/viewplace/#sw"><i class="bi bi-pin-map-fill"></i> View Places</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+
+      <a class="cta-btn" href="/myapp/logout/">
+        <i class="bi bi-box-arrow-right"></i>
+        <span>Logout</span>
+      </a>
+
+      <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+
+    </div>
+  </header>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const header = document.querySelector('.header');
+      const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+      const navmenu = document.querySelector('.navmenu');
+      const dropdowns = document.querySelectorAll('.dropdown');
+
+      // Scroll effect for header
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 50) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
+
+      // Mobile menu toggle
+      if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          navmenu.classList.toggle('active');
+          this.classList.toggle('bi-list');
+          this.classList.toggle('bi-x');
+        });
+      }
+
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!navmenu.contains(event.target) && !mobileNavToggle.contains(event.target)) {
+          navmenu.classList.remove('active');
+          if (mobileNavToggle.classList.contains('bi-x')) {
+            mobileNavToggle.classList.remove('bi-x');
+            mobileNavToggle.classList.add('bi-list');
+          }
+        }
+      });
+
+      // Handle dropdowns on mobile
+      if (window.innerWidth <= 1199) {
+        dropdowns.forEach(dropdown => {
+          const link = dropdown.querySelector('a');
+
+          link.addEventListener('click', function(e) {
+            if (window.innerWidth <= 1199) {
+              e.preventDefault();
+
+              // Close other dropdowns
+              dropdowns.forEach(other => {
+                if (other !== dropdown && other.classList.contains('active')) {
+                  other.classList.remove('active');
+                }
+              });
+
+              // Toggle current dropdown
+              dropdown.classList.toggle('active');
+            }
+          });
+        });
+      }
+
+      // Close dropdowns when clicking on menu item (for desktop)
+      document.querySelectorAll('.navmenu a').forEach(link => {
+        link.addEventListener('click', function() {
+          if (window.innerWidth <= 1199) {
+            navmenu.classList.remove('active');
+            mobileNavToggle.classList.remove('bi-x');
+            mobileNavToggle.classList.add('bi-list');
+          }
+        });
+      });
+
+      // Prevent dropdown from closing when clicking inside
+      dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function(e) {
+          e.stopPropagation();
+        });
+      });
+    });
+  </script>
+

@@ -1,0 +1,313 @@
+{% include 'adminheader.html' %}
+<br><br><br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Bus</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #1abc9c;
+      --light-bg: #f8f9fa;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .form-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-container:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+      border-radius: 0 0 0 100%;
+      opacity: 0.05;
+      z-index: 0;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-header h2 {
+      color: var(--primary-color);
+      font-weight: 700;
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .form-header p {
+      color: #7f8c8d;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .form-section {
+      background: var(--light-bg);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      border-left: 4px solid var(--accent-color);
+    }
+
+    .section-title {
+      color: var(--primary-color);
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title i {
+      color: var(--accent-color);
+      font-size: 20px;
+    }
+
+    .form-row {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      font-weight: 600;
+      color: var(--primary-color);
+      padding-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label i {
+      color: var(--secondary-color);
+      font-size: 18px;
+    }
+
+    .form-control {
+      border: 2px solid #e0e6ed;
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
+      outline: none;
+    }
+
+    .input-group {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary-color);
+      font-size: 18px;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent-color) 0%, #16a085 100%);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 40px auto 0;
+      min-width: 200px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(26, 188, 156, 0.3);
+      color: white;
+    }
+
+    .submit-btn i {
+      margin-right: 10px;
+    }
+
+    .bus-icon {
+      position: absolute;
+      font-size: 120px;
+      color: rgba(52, 152, 219, 0.1);
+      right: 30px;
+      bottom: 30px;
+      z-index: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .form-container {
+        padding: 30px 20px;
+        margin: 20px;
+      }
+
+      .form-header h2 {
+        font-size: 26px;
+      }
+
+      .bus-icon {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div class="form-header">
+      <h2>
+        <i class="fas fa-bus"></i> Edit Bus Details
+      </h2>
+      <p>Update bus information below</p>
+    </div>
+
+    <form action="/myapp/addbus_post/" method="post">
+        {% if messages %}
+  {% for message in messages %}
+    <p style="color:red;">{{ message }}</p>
+  {% endfor %}
+{% endif %}
+
+
+
+      <!-- Bus Information Section -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-info-circle"></i> Bus Information
+        </div>
+
+        <div class="form-row">
+          <label class="col-sm-4 form-label">
+            <i class="fas fa-bus"></i> Bus Name
+          </label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="name" name="busname"
+                      required
+                     placeholder="Enter bus name">
+              <span class="input-icon">🚌</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="col-sm-4 form-label">
+            <i class="fas fa-id-card"></i> Register Number
+          </label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="regno" name="regno"
+                      required
+                     placeholder="KL 36 AZ 9067">
+              <span class="input-icon">🔢</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner Information Section -->
+      <div class="form-section">
+        <div class="section-title">
+          <i class="fas fa-user-tie"></i> Owner Information
+        </div>
+
+        <div class="form-row">
+          <label class="col-sm-4 form-label">
+            <i class="fas fa-user"></i> Owner Name
+          </label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="text" class="form-control" id="ownername" name="ownername"
+                      required
+                     placeholder="Enter owner's name">
+              <span class="input-icon">👤</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="col-sm-4 form-label">
+            <i class="fas fa-envelope"></i> Owner Email
+          </label>
+          <div class="col-sm-8">
+            <div class="input-group">
+              <input type="email" class="form-control" id="owneremail" name="owneremail"
+                      required
+                     placeholder="owner@example.com">
+              <span class="input-icon">📧</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="submit-btn">
+        <i class="fas fa-save"></i> Add Bus
+      </button>
+    </form>
+
+    <div class="bus-icon">🚌</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Simple validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+      const email = document.getElementById('owneremail').value;
+      const regNo = document.getElementById('regno').value;
+
+      if (!email.includes('@') || !email.includes('.')) {
+        e.preventDefault();
+        alert('Please enter a valid email address');
+        return false;
+      }
+
+      if (regNo.trim().length < 5) {
+        e.preventDefault();
+        alert('Please enter a valid registration number');
+        return false;
+      }
+
+      return true;
+    });
+  </script>
+</body>
+</html>
+{% include 'adminfooter.html' %}

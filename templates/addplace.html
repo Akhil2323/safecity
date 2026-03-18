@@ -1,0 +1,163 @@
+{% include 'adminheader.html' %}
+<br><br><br><br>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Place Near Stop (Manual)</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body{
+      background:#f4f6f9;
+      font-family:Segoe UI, sans-serif;
+    }
+    .form-container{
+      max-width:900px;
+      margin:auto;
+      background:#fff;
+      padding:30px;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(0,0,0,.1);
+    }
+    .form-label{
+      font-weight:600;
+    }
+    .submit-btn{
+      background:#1abc9c;
+      color:#fff;
+      border:none;
+      padding:12px;
+      font-weight:600;
+      border-radius:8px;
+      width:100%;
+    }
+    .submit-btn:disabled{
+      background:#aaa;
+      cursor:not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+  <h3 class="text-center mb-4">
+    <i class="fas fa-location-dot"></i> Add Place Near Bus Stop (Manual Entry)
+  </h3>
+
+  <!-- STOP SELECT -->
+  <div class="mb-3">
+    <label class="form-label">
+      <i class="fas fa-bus"></i> Select Bus Stop
+    </label>
+    <select id="stopSelect" class="form-select"
+            onchange="loadStop(); validateForm()" required>
+      <option value="">-- Select Stop --</option>
+      {% for i in data %}
+      <option value="{{ i.id }}"
+              data-route="{{ i.ROUTE.from_destination }} → {{ i.ROUTE.to_destination }}">
+        {{ i.stopname }}
+      </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- ROUTE INFO -->
+  <div class="alert alert-info" id="routeInfo" style="display:none;"></div>
+
+  <!-- FORM -->
+  <form method="post" action="/myapp/addplace_post/" novalidate>
+    {% csrf_token %}
+
+    <input type="hidden" name="stop" id="stopid">
+
+    <!-- PLACE NAME -->
+    <div class="mb-3">
+      <label class="form-label">Place Name</label>
+      <input type="text" name="placename" class="form-control"
+             pattern="[A-Za-z0-9\s]{3,50}"
+             title="3–50 characters (letters & numbers only)"
+             required oninput="validateForm()">
+    </div>
+
+    <!-- PLACE TYPE -->
+    <div class="mb-3">
+      <label class="form-label">Place Type</label>
+      <input type="text" name="placetype" class="form-control"
+             pattern="[A-Za-z\s]{3,30}"
+             title="Only letters allowed (3–30 characters)"
+             placeholder="Hospital / School / Shop"
+             required oninput="validateForm()">
+    </div>
+
+    <!-- LAT LONG -->
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Latitude</label>
+        <input type="number" step="any" name="latitude" class="form-control"
+               min="-90" max="90"
+               title="Latitude must be between -90 and 90"
+               required oninput="validateForm()">
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Longitude</label>
+        <input type="number" step="any" name="longitude" class="form-control"
+               min="-180" max="180"
+               title="Longitude must be between -180 and 180"
+               required oninput="validateForm()">
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+      <i class="fas fa-save"></i> Save Place
+    </button>
+
+  </form>
+
+</div>
+
+<script>
+function loadStop(){
+  const sel = document.getElementById("stopSelect");
+  const routeInfo = document.getElementById("routeInfo");
+
+  if(!sel.value){
+    routeInfo.style.display="none";
+    document.getElementById("stopid").value = "";
+    return;
+  }
+
+  const opt = sel.options[sel.selectedIndex];
+  document.getElementById("stopid").value = sel.value;
+
+  routeInfo.style.display="block";
+  routeInfo.innerHTML = "<b>Route:</b> " + opt.dataset.route;
+}
+
+function validateForm(){
+  const form = document.querySelector("form");
+  const stop = document.getElementById("stopSelect");
+  const submitBtn = document.getElementById("submitBtn");
+
+  if(form.checkValidity() && stop.value !== ""){
+    submitBtn.disabled = false;
+  }else{
+    submitBtn.disabled = true;
+  }
+}
+</script>
+
+</body>
+</html>
+
+{% include 'adminfooter.html' %}

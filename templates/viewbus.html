@@ -1,0 +1,711 @@
+{% include 'adminheader.html' %}
+<br><br><br><br>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bus Fleet Management</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- DataTables CSS -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #1E3C72 0%, #2A5298 100%);
+      --secondary-gradient: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+      --success-gradient: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+      --warning-gradient: linear-gradient(135deg, #FF7E5F 0%, #FEB47B 100%);
+      --dark-blue: #0A2463;
+      --light-blue: #F0F8FF;
+      --accent-teal: #00D4AA;
+      --accent-orange: #FF7E5F;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e6f2ff 0%, #d1e7ff 100%);
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 30px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .fleet-container {
+      max-width: 1400px;
+      margin: 40px auto;
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(10px);
+      padding: 50px;
+      border-radius: 30px;
+      box-shadow:
+        0 25px 50px rgba(30, 60, 114, 0.15),
+        0 15px 35px rgba(0, 114, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header h2 {
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+      font-size: 44px;
+      margin-bottom: 15px;
+      display: inline-block;
+      position: relative;
+      letter-spacing: -0.5px;
+    }
+
+    .page-header h2:before {
+      content: '🚌';
+      margin-right: 25px;
+      font-size: 40px;
+      vertical-align: middle;
+    }
+
+    .page-header p {
+      color: #5D6D7E;
+      font-size: 18px;
+      max-width: 700px;
+      margin: 0 auto;
+      font-weight: 500;
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      transition: all 0.3s ease;
+      box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: var(--secondary-gradient);
+    }
+
+    .stat-card i {
+      font-size: 40px;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    .stat-card .number {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--dark-blue);
+      margin: 10px 0 5px;
+      line-height: 1;
+    }
+
+    .stat-card .label {
+      color: #7B8A8B;
+      font-size: 15px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Add Bus Button */
+    .btn-add-bus {
+      background: var(--success-gradient);
+      color: white;
+      border: none;
+      padding: 18px 40px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      transition: all 0.3s ease;
+      box-shadow:
+        0 10px 30px rgba(0, 176, 155, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      text-decoration: none;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-add-bus:hover {
+      transform: translateY(-5px);
+      box-shadow:
+        0 20px 40px rgba(0, 176, 155, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      color: white;
+    }
+
+    /* TABLE STYLING - SIMPLIFIED FOR BETTER ALIGNMENT */
+    .bus-table-container {
+      overflow-x: auto;
+      border-radius: 20px;
+      box-shadow:
+        0 15px 40px rgba(30, 60, 114, 0.1),
+        0 5px 15px rgba(0, 0, 0, 0.05);
+      margin-top: 30px;
+      background: white;
+    }
+
+    #registrationTable {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 0;
+      background: white;
+      table-layout: fixed; /* FIXED TABLE LAYOUT FOR BETTER ALIGNMENT */
+    }
+
+    /* FIXED TABLE HEADER */
+    #registrationTable thead {
+      background: linear-gradient(135deg, #1E3C72 0%, #2A5298 100%) !important;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    #registrationTable thead tr {
+      background: transparent !important;
+    }
+
+    #registrationTable thead th {
+      color: white !important;
+      font-weight: 700 !important;
+      font-size: 16px !important;
+      padding: 25px 10px !important;
+      border: none !important;
+      text-align: center !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.8px !important;
+      border-bottom: 3px solid rgba(255, 255, 255, 0.3) !important;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      background: transparent !important;
+    }
+
+    #registrationTable thead th:first-child {
+      border-radius: 20px 0 0 0;
+      width: 80px; /* Fixed width for BUS ID */
+    }
+
+    #registrationTable thead th:nth-child(2) {
+      width: 200px; /* Fixed width for BUS NAME */
+    }
+
+    #registrationTable thead th:nth-child(3) {
+      width: 220px; /* Fixed width for REGISTER NUMBER */
+    }
+
+    #registrationTable thead th:nth-child(4) {
+      width: 180px; /* Fixed width for OWNER NAME */
+    }
+
+    #registrationTable thead th:nth-child(5) {
+      width: 220px; /* Fixed width for OWNER EMAIL */
+    }
+
+    #registrationTable thead th:nth-child(6) {
+      width: 120px; /* Fixed width for EDIT */
+    }
+
+    #registrationTable thead th:nth-child(7) {
+      width: 120px; /* Fixed width for DELETE */
+      border-radius: 0 20px 0 0;
+    }
+
+    #registrationTable thead th i {
+      margin-right: 8px;
+      font-size: 18px;
+      vertical-align: middle;
+      opacity: 0.9;
+    }
+
+    /* Table body styling */
+    #registrationTable tbody tr {
+      transition: all 0.3s ease;
+      border-bottom: 1px solid rgba(214, 228, 255, 0.5);
+      position: relative;
+    }
+
+    #registrationTable tbody tr:nth-child(even) {
+      background-color: rgba(240, 248, 255, 0.5);
+    }
+
+    #registrationTable tbody tr:hover {
+      background-color: rgba(0, 198, 255, 0.05);
+    }
+
+    #registrationTable tbody td {
+      padding: 20px 10px;
+      color: #2C3E50;
+      font-size: 15px;
+      font-weight: 500;
+      text-align: center;
+      vertical-align: middle;
+      border-top: 1px solid rgba(214, 228, 255, 0.5);
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Fixed column widths matching headers */
+    #registrationTable tbody td:first-child {
+      width: 80px;
+      font-weight: 700;
+      color: var(--dark-blue);
+    }
+
+    #registrationTable tbody td:nth-child(2) {
+      width: 200px;
+    }
+
+    #registrationTable tbody td:nth-child(3) {
+      width: 220px;
+    }
+
+    #registrationTable tbody td:nth-child(4) {
+      width: 180px;
+    }
+
+    #registrationTable tbody td:nth-child(5) {
+      width: 220px;
+    }
+
+    #registrationTable tbody td:nth-child(6) {
+      width: 120px;
+      padding: 15px 10px !important;
+    }
+
+    #registrationTable tbody td:nth-child(7) {
+      width: 120px;
+      padding: 15px 10px !important;
+    }
+
+    /* Bus Status Badges - PROPERLY ALIGNED */
+    .bus-id {
+      background: var(--primary-gradient);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-block;
+      min-width: 40px;
+      box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+    }
+
+    .bus-name {
+      font-weight: 700;
+      color: var(--dark-blue);
+      display: inline-block;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* REGISTER NUMBER WITH BETTER ALIGNMENT */
+    .reg-number {
+      background: linear-gradient(135deg, #00D4AA 0%, #00a085 100%);
+      color: white;
+      padding: 10px 15px !important;
+      border-radius: 15px;
+      font-weight: 700;
+      font-size: 15px;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px !important;
+      display: inline-block;
+      box-shadow: 0 5px 20px rgba(0, 212, 170, 0.3);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      min-width: 180px;
+      max-width: 200px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      white-space: nowrap;
+    }
+
+    .owner-email {
+      color: #2980b9;
+      font-weight: 500;
+      display: inline-block;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* ACTION BUTTONS - PROPERLY ALIGNED */
+    .btn-action {
+      padding: 10px 20px !important;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      border: 2px solid transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      justify-content: center;
+      width: 100px; /* Fixed width for consistent alignment */
+      margin: 0 auto;
+    }
+
+    .btn-edit {
+      background: linear-gradient(135deg, #4FD1C7 0%, #38B2AC 100%);
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background: linear-gradient(135deg, #38B2AC 0%, #319795 100%);
+      color: white;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(79, 209, 199, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-delete {
+      background: linear-gradient(135deg, #FC8181 0%, #F56565 100%);
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background: linear-gradient(135deg, #F56565 0%, #E53E3E 100%);
+      color: white;
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 10px 25px rgba(245, 101, 101, 0.4);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* DataTables Customization */
+    .dataTables_wrapper {
+      position: relative;
+    }
+
+    .dataTables_length,
+    .dataTables_filter {
+      margin-bottom: 25px;
+    }
+
+    .dataTables_length label,
+    .dataTables_filter label {
+      color: var(--dark-blue);
+      font-weight: 600;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dataTables_length select,
+    .dataTables_filter input {
+      border: 2px solid rgba(214, 228, 255, 0.8);
+      border-radius: 15px;
+      padding: 12px 20px;
+      margin: 0 10px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+      background: white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .dataTables_filter input {
+      width: 300px !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%231E3C72' class='bi bi-search' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 20px center;
+      background-size: 20px;
+      padding-left: 55px;
+    }
+
+    .dataTables_info {
+      color: #5D6D7E;
+      font-weight: 600;
+      padding-top: 20px !important;
+      font-size: 15px;
+      background: rgba(240, 248, 255, 0.8);
+      padding: 15px !important;
+      border-radius: 15px;
+      border: 1px solid rgba(214, 228, 255, 0.5);
+    }
+
+    .paginate_button {
+      border-radius: 15px !important;
+      margin: 0 8px !important;
+      border: 2px solid rgba(214, 228, 255, 0.8) !important;
+      padding: 12px 20px !important;
+      color: var(--dark-blue) !important;
+      font-weight: 600 !important;
+      transition: all 0.3s ease !important;
+      font-size: 14px !important;
+      background: white !important;
+    }
+
+    .paginate_button:hover {
+      background: var(--secondary-gradient) !important;
+      color: white !important;
+      border-color: transparent !important;
+      transform: translateY(-3px);
+    }
+
+    .paginate_button.current {
+      background: var(--primary-gradient) !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .fleet-container {
+        padding: 30px 20px;
+        margin: 20px;
+      }
+
+      .page-header h2 {
+        font-size: 32px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-action {
+        width: 80px;
+        padding: 8px 15px !important;
+        font-size: 12px;
+      }
+
+      .dataTables_filter input {
+        width: 100% !important;
+        margin: 10px 0 !important;
+      }
+
+      .reg-number {
+        min-width: 140px;
+        font-size: 13px;
+        padding: 8px 12px !important;
+        letter-spacing: 1px !important;
+      }
+
+      #registrationTable thead th,
+      #registrationTable tbody td {
+        padding: 15px 8px !important;
+        font-size: 14px;
+      }
+    }
+
+    /* No data styling */
+    .dataTables_empty {
+      padding: 50px !important;
+      text-align: center;
+      color: #95a5a6;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="fleet-container">
+    <div class="page-header">
+      <h2>Bus Fleet Management</h2>
+      <p>Manage your complete bus fleet with detailed information and controls</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <i class="fas fa-bus"></i>
+        <div class="number">{{ data|length }}</div>
+        <div class="label">Total Buses</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-users"></i>
+        <div class="number">{{ data|length }}</div>
+        <div class="label">Bus Owners</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-database"></i>
+        <div class="number">{{ data|length }}</div>
+        <div class="label">Active Records</div>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-chart-line"></i>
+        <div class="number">{{ data|length }}</div>
+        <div class="label">Fleet Size</div>
+      </div>
+    </div>
+
+    <!-- Add Bus Button -->
+    <a href="/myapp/addbus_get/" class="btn-add-bus">
+      <i class="fas fa-plus-circle"></i> Add New Bus
+    </a>
+
+    <!-- Bus Table Container -->
+    <div class="bus-table-container">
+      <table id="registrationTable" class="table table-striped table-bordered">
+        <thead>
+          <tr>
+            <th><i class="fas fa-hashtag"></i> BUS ID</th>
+            <th><i class="fas fa-bus"></i> BUS NAME</th>
+            <th><i class="fas fa-id-card"></i> REG NO</th>
+            <th><i class="fas fa-user-tie"></i> OWNER</th>
+            <th><i class="fas fa-envelope"></i> EMAIL</th>
+            <th><i class="fas fa-edit"></i> EDIT</th>
+            <th><i class="fas fa-trash"></i> DELETE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in data %}
+          <tr>
+            <td><span class="bus-id">{{ forloop.counter }}</span></td>
+            <td><span class="bus-name">{{ i.bus_name }}</span></td>
+            <td><span class="reg-number">{{ i.reg_no|default:"KL 36 AZ 9067" }}</span></td>
+            <td><strong>{{ i.ownername }}</strong></td>
+            <td><span class="owner-email">{{ i.owneremail }}</span></td>
+            <td>
+              <a href="/myapp/editbus_get/{{ i.id }}" class="btn-action btn-edit">
+                <i class="fas fa-edit"></i> EDIT
+              </a>
+            </td>
+            <td>
+              <a href="/myapp/deletebus/{{ i.id }}" class="btn-action btn-delete" onclick="return confirmDelete('{{ i.bus_name }}')">
+                <i class="fas fa-trash-alt"></i> DELETE
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center py-5">
+              <i class="fas fa-bus fa-4x text-muted mb-3" style="opacity: 0.3;"></i>
+              <h4 class="text-muted mb-2">No Buses Found</h4>
+              <p class="text-muted">Add your first bus to get started</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Initialize DataTable with FIXED layout for better alignment
+      const table = $('#registrationTable').DataTable({
+        "language": {
+          "search": "<i class='fas fa-search'></i> SEARCH:",
+          "lengthMenu": "<i class='fas fa-list'></i> SHOW _MENU_ ENTRIES",
+          "info": "Showing _START_ to _END_ of _TOTAL_ buses",
+          "infoEmpty": "No buses available",
+          "infoFiltered": "(filtered from _MAX_ total buses)",
+          "zeroRecords": "No matching buses found",
+          "paginate": {
+            "first": "<i class='fas fa-angle-double-left'></i>",
+            "last": "<i class='fas fa-angle-double-right'></i>",
+            "previous": "<i class='fas fa-chevron-left'></i>",
+            "next": "<i class='fas fa-chevron-right'></i>"
+          }
+        },
+        "pageLength": 10,
+        "order": [[0, 'asc']],
+        "responsive": true,
+        "autoWidth": false,
+        "scrollX": true,
+        "drawCallback": function(settings) {
+          // Force table header styling
+          $('#registrationTable thead').css({
+            'background': 'linear-gradient(135deg, #1E3C72 0%, #2A5298 100%)'
+          });
+
+          // Ensure header cells have white text
+          $('#registrationTable thead th').css({
+            'color': 'white',
+            'background': 'transparent'
+          });
+
+          // Format registration numbers
+          $('.reg-number').each(function() {
+            let regNo = $(this).text().trim();
+            // Format as KL 36 AZ 9067 if not already formatted
+            if (regNo && !regNo.includes(' ')) {
+              if (regNo.length === 10) {
+                // Format: KL36AZ9067 -> KL 36 AZ 9067
+                regNo = regNo.replace(/([A-Z]{2})(\d{2})([A-Z]{2})(\d{4})/, '$1 $2 $3 $4');
+                $(this).text(regNo);
+              }
+            }
+          });
+        }
+      });
+
+      // Force apply table header styling on load
+      setTimeout(() => {
+        $('#registrationTable thead').css({
+          'background': 'linear-gradient(135deg, #1E3C72 0%, #2A5298 100%)'
+        });
+        $('#registrationTable thead th').css({
+          'color': 'white',
+          'background': 'transparent'
+        });
+      }, 100);
+
+      // Search input styling
+      $('.dataTables_filter input').attr('placeholder', 'Search buses...');
+    });
+
+    // Delete confirmation
+    function confirmDelete(busName) {
+      return confirm(`Are you sure you want to delete "${busName}"?\nThis action cannot be undone.`);
+    }
+  </script>
+</body>
+</html>
+
+{% include 'adminfooter.html' %}

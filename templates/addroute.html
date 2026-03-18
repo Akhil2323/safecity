@@ -1,0 +1,552 @@
+{% include 'adminheader.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Route (Manual)</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f4f6f9 0%, #e4e8f0 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container-custom {
+            max-width: 750px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container-custom:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #1abc9c 0%, #3498db 100%);
+            border-radius: 0 0 0 100%;
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h2 {
+            font-weight: 800;
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-header p {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #1abc9c;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #1abc9c;
+            font-size: 22px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-label i {
+            color: #3498db;
+            font-size: 16px;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 14px 15px;
+            border: 2px solid #e0e6ed;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #1abc9c;
+            box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.2);
+            outline: none;
+        }
+
+        .form-control:valid:not(:focus):not(:placeholder-shown) {
+            border-color: #28a745;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) center;
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+            padding-right: 2.5rem;
+        }
+
+        .form-control:invalid:not(:focus):not(:placeholder-shown) {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23dc3545' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(.375em + .1875rem) center;
+            background-size: calc(.75em + .375rem) calc(.75em + .375rem);
+            padding-right: 2.5rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #1abc9c, #16a085);
+            color: #fff;
+            border: none;
+            padding: 16px 45px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            display: block;
+            margin: 40px auto 0;
+            min-width: 220px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(26, 188, 156, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+
+        .submit-btn i {
+            margin-right: 10px;
+        }
+
+        /* Validation Feedback */
+        .error-message {
+            display: none;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #dc3545;
+        }
+
+        .success-message {
+            display: none;
+            width: 100%;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #28a745;
+        }
+
+        .pattern-hint {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #3498db;
+            font-size: 18px;
+            z-index: 2;
+        }
+
+        .map-icon {
+            position: absolute;
+            font-size: 120px;
+            color: rgba(52, 152, 219, 0.1);
+            right: 30px;
+            bottom: 30px;
+            z-index: 0;
+        }
+
+        /* Required field indicator */
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container-custom {
+                padding: 25px 20px;
+                margin: 20px;
+            }
+
+            .page-header h2 {
+                font-size: 26px;
+            }
+
+            .map-icon {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-custom">
+    <div class="page-header">
+        <h2><i class="fas fa-route"></i> Add Route (Manual)</h2>
+        <p class="text-muted">Enter route details manually (no map)</p>
+    </div>
+
+    <form id="routeForm" method="post" action="/myapp/addroute_post/" novalidate>
+        {% csrf_token %}
+
+        <!-- Location Names -->
+        <div class="form-section">
+            <div class="section-title">
+                <i class="fas fa-map-marker-alt"></i> Route Locations
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label required">
+                    <i class="fas fa-arrow-right-from-bracket"></i> From Destination
+                </label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="from_destination"
+                           name="from_destination"
+                           placeholder="Eg: Maharaja Metro Station, Kochi"
+                           required
+                           minlength="3"
+                           maxlength="100"
+                           pattern="^[A-Za-z0-9\s.,'()-]+$"
+                           title="Enter valid location name (letters, numbers, spaces, and basic punctuation only)"
+                           value="{{ request.POST.from_destination|default:'' }}">
+                    <span class="input-icon">📍</span>
+                </div>
+                <small class="pattern-hint">Enter starting point (3-100 characters, letters, numbers, spaces, and basic punctuation only)</small>
+                <div class="error-message" id="from-error">
+                    Please enter a valid starting location (3-100 characters)
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label required">
+                    <i class="fas fa-arrow-right-to-bracket"></i> To Destination
+                </label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="to_destination"
+                           name="to_destination"
+                           placeholder="Eg: MG Road, Ernakulam"
+                           required
+                           minlength="3"
+                           maxlength="100"
+                           pattern="^[A-Za-z0-9\s.,'()-]+$"
+                           title="Enter valid location name (letters, numbers, spaces, and basic punctuation only)"
+                           value="{{ request.POST.to_destination|default:'' }}">
+                    <span class="input-icon">📍</span>
+                </div>
+                <small class="pattern-hint">Enter destination (3-100 characters, letters, numbers, spaces, and basic punctuation only)</small>
+                <div class="error-message" id="to-error">
+                    Please enter a valid destination (3-100 characters)
+                </div>
+            </div>
+        </div>
+
+        <!-- Coordinates -->
+        <div class="form-section">
+            <div class="section-title">
+                <i class="fas fa-globe"></i> Coordinates
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label required">
+                        <i class="fas fa-latitude"></i> Latitude
+                    </label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="latitude"
+                               name="latitude"
+                               placeholder="Eg: 9.931233"
+                               required
+                               pattern="^-?\d{1,2}(\.\d{1,6})?$"
+                               title="Enter valid latitude (e.g., 9.931233 or -12.345678)"
+                               value="{{ request.POST.latitude|default:'' }}">
+                        <span class="input-icon">🌐</span>
+                    </div>
+                    <small class="pattern-hint">Format: XX.XXXXXX (-90 to +90, up to 6 decimal places)</small>
+                    <div class="error-message" id="lat-error">
+                        Please enter valid latitude (e.g., 9.931233 or -12.345678)
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <label class="form-label required">
+                        <i class="fas fa-longitude"></i> Longitude
+                    </label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="longititude"
+                               name="longititude"
+                               placeholder="Eg: 76.267303"
+                               required
+                               pattern="^-?\d{1,3}(\.\d{1,6})?$"
+                               title="Enter valid longitude (e.g., 76.267303 or -122.419418)"
+                               value="{{ request.POST.longititude|default:'' }}">
+                        <span class="input-icon">🌐</span>
+                    </div>
+                    <small class="pattern-hint">Format: XXX.XXXXXX (-180 to +180, up to 6 decimal places)</small>
+                    <div class="error-message" id="lng-error">
+                        Please enter valid longitude (e.g., 76.267303 or -122.419418)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">
+            <i class="fas fa-save"></i> Save Route
+        </button>
+
+    </form>
+
+    <div class="map-icon">🗺️</div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('routeForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const fields = form.querySelectorAll('input[required]');
+
+        // Function to validate a single field
+        function validateField(field) {
+            const errorElement = document.getElementById(field.id + '-error');
+
+            // Reset field state
+            field.classList.remove('is-valid', 'is-invalid');
+
+            // Check if field is valid
+            if (field.validity.valid) {
+                field.classList.add('is-valid');
+                if (errorElement) errorElement.style.display = 'none';
+                return true;
+            } else {
+                field.classList.add('is-invalid');
+                if (errorElement) {
+                    errorElement.style.display = 'block';
+                    // Set appropriate error message
+                    if (field.validity.valueMissing) {
+                        errorElement.textContent = 'This field is required';
+                    } else if (field.validity.patternMismatch) {
+                        errorElement.textContent = field.title || 'Invalid format';
+                    } else if (field.validity.tooShort) {
+                        errorElement.textContent = `Minimum ${field.minLength} characters required`;
+                    } else if (field.validity.tooLong) {
+                        errorElement.textContent = `Maximum ${field.maxLength} characters allowed`;
+                    } else if (field.validity.rangeUnderflow || field.validity.rangeOverflow) {
+                        if (field.id === 'latitude') {
+                            errorElement.textContent = 'Latitude must be between -90 and +90';
+                        } else if (field.id === 'longititude') {
+                            errorElement.textContent = 'Longitude must be between -180 and +180';
+                        }
+                    }
+                }
+                return false;
+            }
+        }
+
+        // Function to validate entire form
+        function validateForm() {
+            let isValid = true;
+
+            fields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            // Additional custom validation for coordinate ranges
+            const latField = document.getElementById('latitude');
+            const lngField = document.getElementById('longititude');
+
+            if (latField && latField.value) {
+                const lat = parseFloat(latField.value);
+                if (isNaN(lat) || lat < -90 || lat > 90) {
+                    latField.classList.add('is-invalid');
+                    document.getElementById('lat-error').textContent = 'Latitude must be between -90 and +90';
+                    document.getElementById('lat-error').style.display = 'block';
+                    isValid = false;
+                }
+            }
+
+            if (lngField && lngField.value) {
+                const lng = parseFloat(lngField.value);
+                if (isNaN(lng) || lng < -180 || lng > 180) {
+                    lngField.classList.add('is-invalid');
+                    document.getElementById('lng-error').textContent = 'Longitude must be between -180 and +180';
+                    document.getElementById('lng-error').style.display = 'block';
+                    isValid = false;
+                }
+            }
+
+            // Enable/disable submit button
+            submitBtn.disabled = !isValid;
+            return isValid;
+        }
+
+        // Real-time validation on input
+        fields.forEach(field => {
+            // Validate on blur
+            field.addEventListener('blur', function() {
+                validateField(this);
+                validateForm();
+            });
+
+            // Validate as user types (with debounce)
+            let timeout;
+            field.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    validateField(this);
+                    validateForm();
+                }, 300);
+            });
+
+            // Clear error when user starts typing
+            field.addEventListener('focus', function() {
+                this.classList.remove('is-invalid');
+                const errorElement = document.getElementById(this.id + '-error');
+                if (errorElement) errorElement.style.display = 'none';
+            });
+        });
+
+        // Form submission handler
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Validate form before submission
+            if (!validateForm()) {
+                // Find first invalid field and focus on it
+                const firstInvalid = form.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.focus();
+                }
+
+                // Show all error messages
+                fields.forEach(field => {
+                    if (!field.validity.valid) {
+                        const errorElement = document.getElementById(field.id + '-error');
+                        if (errorElement) errorElement.style.display = 'block';
+                    }
+                });
+
+                return false;
+            }
+
+            // Show loading state
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Route...';
+            submitBtn.disabled = true;
+
+            // Submit the form after a short delay
+            setTimeout(() => {
+                form.submit();
+            }, 500);
+        });
+
+        // Auto-format coordinates as user types
+        document.getElementById('latitude')?.addEventListener('input', function(e) {
+            let value = e.target.value;
+            // Remove non-numeric characters except decimal point and minus sign
+            value = value.replace(/[^0-9.-]/g, '');
+            // Ensure only one decimal point
+            if ((value.match(/\./g) || []).length > 1) {
+                value = value.substring(0, value.lastIndexOf('.'));
+            }
+            // Ensure minus sign is only at the beginning and only one
+            if (value.includes('-')) {
+                value = value.replace(/-/g, '');
+                value = '-' + value;
+            }
+            e.target.value = value;
+        });
+
+        document.getElementById('longititude')?.addEventListener('input', function(e) {
+            let value = e.target.value;
+            // Remove non-numeric characters except decimal point and minus sign
+            value = value.replace(/[^0-9.-]/g, '');
+            // Ensure only one decimal point
+            if ((value.match(/\./g) || []).length > 1) {
+                value = value.substring(0, value.lastIndexOf('.'));
+            }
+            // Ensure minus sign is only at the beginning and only one
+            if (value.includes('-')) {
+                value = value.replace(/-/g, '');
+                value = '-' + value;
+            }
+            e.target.value = value;
+        });
+
+        // Initial form validation
+        validateForm();
+    });
+</script>
+
+</body>
+</html>
+
+{% include 'adminfooter.html' %}

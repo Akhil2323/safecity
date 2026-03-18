@@ -1,0 +1,102 @@
+{% include 'adminheader.html' %}
+<br><br><br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Stop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      background: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    .form-container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .form-header h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+    }
+    .form-header p {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 30px;
+    }
+    .form-label {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    .submit-btn {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .submit-btn:hover {
+      background-color: #1abc9c;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <div class="form-header">
+    <h2><i class="fas fa-edit"></i> Edit Stop</h2>
+    <p>Update stop name, coordinates, and route manually</p>
+  </div>
+
+  <form action="/myapp/editstop_post/" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="id" value="{{ data.id }}">
+
+    <!-- Stop Name -->
+    <div class="mb-3">
+      <label class="form-label"><i class="fas fa-signature"></i> Stop Name</label>
+      <input type="text" class="form-control" name="stopname" value="{{ data.stopname }}" required>
+    </div>
+
+    <!-- Route Selection -->
+    <div class="mb-3">
+      <label class="form-label"><i class="fas fa-bus"></i> Select Route</label>
+      <select name="route" class="form-control" required>
+        <option value="">-- Select a Route --</option>
+        {% for i in ro %}
+          <option value="{{ i.id }}" {% if i.id == data.ROUTE_id %}selected{% endif %}>
+            {{ i.from_destination }} → {{ i.to_destination }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Latitude & Longitude -->
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-4">
+      <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Update Stop</button>
+      <a href="/myapp/viewstop/" class="btn btn-secondary ms-2"><i class="fas fa-times"></i> Cancel</a>
+    </div>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% include 'adminfooter.html' %}
